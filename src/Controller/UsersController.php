@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-use Cake\ORM\TableRegistry;
+use Cake\Auth\DefaultPasswordHasher;
 
 /**
  * Users Controller
@@ -18,27 +18,17 @@ class UsersController extends AppController
      * @return \Cake\Network\Response|null
      */
 
-
-    public function initialize(){
-
-        /*$this->viewBuilder()->layout("testlayout");*/
-        parent::initialize();
-        $this->loadModel('Bookmarks');
-        
-    }
-
     public $helpers =["Form", "Html"];
     public $components = ["Csrf"];
     public $paginate = ['Users'=>[
-                'fields'=>['Users.id', 'Users.email','Users.modified', 'Users.created'],
-                'limit'=>2,
-                'maxLimit'=>1,
-                'order'=>['Users.email'=>'Asc'],
+                'fields'=>['Users.id', 'Users.username', 'Users.email', 'Users.role','Users.modified', 'Users.created'],
+                'limit'=>10,
+             /*   'maxLimit'=>155,*/
+                'order'=>['Users.id'=>'Asc'],
                 'sortWhitelist'=>['Users.id', 'Users.email','Users.modified', 'Users.created']
                 ],
                 'Bookmarks'=>['fields'=>['Bookmarks.id','Bookmarks.users_id']]
     ];
-
 
     public function index()
     {
@@ -58,7 +48,7 @@ class UsersController extends AppController
     public function view($id = null)
     {
         $user = $this->Users->get($id, [
-            'contain' => []
+            'contain' => ['Bookmarks']
         ]);
 
         $this->set('user', $user);
@@ -74,7 +64,13 @@ class UsersController extends AppController
     {
         $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
-            $user = $this->Users->patchEntity($user, $this->request->data);
+
+            // To store normal password    
+                $this->request->data['password_normal'] = $this->request->data['password'];             
+
+             $user = $this->Users->patchEntity($user, $this->request->data);
+
+            
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
 
@@ -96,19 +92,36 @@ class UsersController extends AppController
      */
     public function edit($id = null)
     {
-        $user = $this->Users->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $user = $this->Users->patchEntity($user, $this->request->data);
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The user could not be saved. Please, try again.'));
+        $user = $this->Users->get($id, [
+            'contain' => [],
+        ]);
+
+       if ($this->request->is(['patch', 'post', 'put'])) {
+
+            $old_password = (new DefaultPasswordHasher)->check($this->request->data['old_password'],$user['password']);
+            
+            if(empty($old_password)){
+                $this->Flash->customError(__('Old password is not correct'));
+                
+            }
+
+            else{
+        
+                $user = $this->Users->patchEntity($user, $this->request->data);
+            
+                if ($this->Users->save($user)) {
+                    
+                    $this->Flash->success(__('The user has been saved.'));
+                    return $this->redirect(['action' => 'index']);
+                }
+
+                else{
+                    $this->Flash->error(__('The user could not be saved. Please, try again.'));
+                }
             }
         }
+
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
     }
@@ -134,30 +147,29 @@ class UsersController extends AppController
     }
 
 
-    public function test(){
-        
+    public function login(){
 
-    $query = TableRegistry::get('Users')->find('list');
-    $record = $query->select(['total_user'=>$query->func()->sum('id')])
-                    ->limit(6)
-                    ->page(1)
-                    ->where(['password IS NOT NULL'])
-                    ->extract('email');
-    
-foreach($query as $id=> $value)
-    echo "$id : $value";
+        if(!empty($this->request->session()->read('Auth.User'))) {
 
+            return $this->redirect($this->referer());
+        }
+        if($this->request->is('post')){
+            $user= $this->Auth->identify();
+             
+            if ($user) {
+            $this->Auth->setUser($user);
+            return $this->redirect($this->Auth->redirectUrl());
+        } else {
+            $this->Flash->customError(__('Username or password is incorrect'), ['escape' => true]);
+        }
     }
+}
 
 
-    public function task(){
-    
-    $this->viewBuilder()->layout("frontend");
+public function logout(){
 
-/*    echo "<pre>";
-    var_dump($this->request);
-*/
-    }
+    return $this->redirect($this->Auth->logout());
+}
 
 
 }

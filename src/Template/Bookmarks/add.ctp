@@ -9,9 +9,7 @@
     </ul>
 </nav>
 <div class="bookmarks form col-lg-9 col-md-8 columns content">
-    <?= $this->Form->create($bookmark);
-
-    pr($users) ?>
+    <?= $this->Form->create($bookmark) ?>
     <fieldset>
         <legend><?= __('Add Bookmark') ?></legend>
         <?php

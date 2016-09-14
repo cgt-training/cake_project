@@ -11,7 +11,8 @@
 			
 			echo  $this->Html->css("bootstrap.min.css");
 			echo  $this->Html->css("main.css");
-			echo  $this->Html->script("jquery-1.9.1.min.js");
+			echo  $this->Html->script("bootstrap-3.3.7-dist/js/jquery-1.9.1.min.js");
+			echo $this->Html->script("bootstrap-3.3.7-dist/js/bootstrap.min.js");
 		?>
 		
 

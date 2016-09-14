@@ -44,6 +44,31 @@ class AppController extends Controller
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
         $this->viewBuilder()->layout("testlayout");
+     
+        $this->loadComponent('Auth', [ 
+
+                        'loginRedirect' => [
+                        'controller' => 'Bookmarks',
+                        'action' => 'index',
+                        'prefix' => false,
+                        ],
+
+                        'logoutRedirect' => [
+                        'controller' => 'Users',
+                        'action' => 'index',
+                        'prefix' => false,
+                        ],
+
+                        'authenticate' => [
+                            'Form' => [
+                                'fields' => ['username' => 'username',  'password' => 'password']
+                            ]
+
+                        ],
+                        
+                    ]);
+
+     
     }
 
     /**
@@ -52,6 +77,18 @@ class AppController extends Controller
      * @param \Cake\Event\Event $event The beforeRender event.
      * @return void
      */
+
+
+    public function beforeFilter(Event $event){
+
+            if($this->request->params['action']=='edit')
+                '';
+
+        parent::beforeFilter($event);
+        $this->Auth->allow('index');
+    }
+
+
     public function beforeRender(Event $event)
     {
         if (!array_key_exists('_serialize', $this->viewVars) &&
@@ -59,5 +96,20 @@ class AppController extends Controller
         ) {
             $this->set('_serialize', true);
         }
+
+        $this->set('loginRedirect',['controller'=>'Users','action'=>'login']);
+        $this->set('logoutRedirect',['controller'=>'Users','action'=>'logout']);
+    }
+
+
+    public function isAuthorized($user){
+
+        if(!empty($user['role']) && $user['role'] == 'Admin'){
+            return true;
+        }
+
+        return false;
+
+
     }
 }

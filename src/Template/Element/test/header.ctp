@@ -30,6 +30,22 @@
 										</div>
 									</div>	
 								</nav>
+
+								<div class="welocme text-capitalize text-right col-lg-3 col-md-6 col-sm-12 pull-right">
+										<?php
+
+
+										$user = $this->request->session()->read('Auth.User');
+										if(empty($user)){
+												echo  __('welcome'), " ",__('guest');
+										}
+										else{
+											 $username = $this->request->session()->read('Auth.User.username');	
+											echo __('welcome'), " ",$username;
+											
+										}
+										?>
+								</div>
 							</div>
 
 							<div class="row">
@@ -47,14 +63,65 @@
 				
 								<div class="navbar-collapse collapse col-padding " id="site-menu">
 									<ul class="nav nav-tabs text-capitalize nav-justified menu">
-										<li role="presentation" class="active"><a href="#">Home</a></li>
-										<li role="presentation"><a href="#">About&nbsp;Us</a></li>
-										<li role="presentation"><a href="#">Courses</a></li>
-										<li role="presentation"><a href="#">Admission&nbsp;Procedure</a></li>
-										<li role="presentation"><a href="#">Development</a></li>
+										<li role="presentation" <?php
+											echo (!empty($this->request->params['controller']) && $this->request->params['controller']=="Users" && $this->request->params['action']!="login")?'class="active"':'';
+
+										 ?>>
+											<?php
+												echo $this->Html->link(__('Users'),['controller'=>'Users','action'=>'index']);
+										?>
+										</li>
+
+										<li role="presentation" <?php
+											echo (!empty($this->request->params['controller']) && $this->request->params['controller']=="Bookmarks")?'class="active"':''
+										?>>
+										
+											<?php
+												echo $this->Html->link(__('Bookmarks'),['controller'=>'Bookmarks']);
+										?>
+										</li>
+										<li role="presentation" <?php
+											echo (!empty($this->request->params['controller']) && $this->request->params['controller']=="Tags")?'class="active"':'';
+
+										 ?>>
+										
+											<?php
+												echo $this->Html->link(__('Tags'),['controller'=>'Tags']);
+										?>
+										</li>
+
+										<li role="presentation" <?php
+											echo (!empty($this->request->params['controller']) && $this->request->params['controller']=="Articles")?'class="active"':'';
+
+										 ?>>
+										
+											<?php
+												echo $this->Html->link(__('Articles'),['controller'=>'Articles']);
+										?>
+										</li>
+										
+										<!--li role="presentation"><a href="#">Development</a></li>
 										<li role="presentation"><a href="#">Faculty</a></li>
-										<li role="presentation"><a href="#">placement</a></li>
-										<li role="presentation" ><a href="#">contact&nbsp;us</a></li>
+										<li role="presentation"><a href="#">placement</a></li-->
+										<li role="presentation"
+
+											<?php 
+												echo (!empty($this->request->params['action']) && $this->request->params['action']=="login")?'class="active"':'';
+											?>
+										>
+										<?php
+
+
+										if(empty($user)){
+											echo $this->Html->link('Login',$loginRedirect);
+										}
+
+										else{
+											echo $this->Html->link('Logout',$logoutRedirect);
+										}
+
+										?>
+										</li>
 									</ul>
 								</div>
 						

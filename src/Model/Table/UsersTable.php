@@ -55,16 +55,29 @@ class UsersTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->notEmpty('id', 'create');
 
         $validator
             ->email('email')
             ->requirePresence('email', 'create')
-            ->notEmpty('email');
+            ->notEmpty('email','Email ID must be enter');
+
+        $validator
+            ->requirePresence('username',true)
+            ->notEmpty('username');        
 
         $validator
             ->requirePresence('password', 'create')
+            ->add('password',[
+                'size'=> [
+                    'rule'  => ['lengthBetween',6,8],
+                    'message'=>'Password length must be between 8 to 15'    ]
+                    ])
             ->notEmpty('password');
+
+        $validator
+            ->requirePresence('role','create')
+            ->notEmpty('role');
 
         return $validator;
     }

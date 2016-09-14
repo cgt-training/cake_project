@@ -14,8 +14,9 @@
 
 			<div class="container">
 				<div class="row">
-				<?= $this->Flash->render() ?>	
-		<?php echo $this->fetch('content'); ?>
+				<?= $this->Flash->render() ;
+				
+		 echo $this->fetch('content'); ?>
 			</div>
 			</div>
 

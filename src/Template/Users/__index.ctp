@@ -30,19 +30,9 @@
                 <td><?= h($user->modified) ?></td>
                 <td><?= h($user->role) ?></td>
                 <td class="actions">
-                    <? 
-                    $userRole = $this->request->session()->read('Auth.User.role');
-
-                    echo $this->AuthLink->allowedLink($userRole,['action' => 'view', $user->id],' View ');
-
-                    echo $this->AuthLink->allowedLink($userRole,['action' => 'edit', $user->id],' Edit ');
-
-                    echo  $this->Html->link(__($action['action']), $action['url']) ;
-
-                    echo $action = $this->AuthLink->allowedLink($userRole,['action' => 'delete', $user->id], ' Delete ');
-                     pr($action);
-                    
-                    echo $this->Form->postLink(__($action['action']), $action['url'], !empty($action['url'])?['confirm' => __('Are you sure you want to delete # {0}?', $user->id)]:'') ?>
+                    <?= $this->Html->link(__('View'), ['action' => 'view', $user->id]) ?>
+                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $user->id]) ?>
+                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $user->id], ['confirm' => __('Are you sure you want to delete # {0}?', $user->id)]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>
