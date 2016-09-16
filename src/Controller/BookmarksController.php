@@ -19,10 +19,34 @@ class BookmarksController extends AppController
     
     public function index()
     {
+      $bookmarks = $this->Bookmarks
+                            ->find()
+                            ->select(['Bookmarks__id' => 'Bookmarks.id', 
+                                      'Bookmarks__user_id' => 'Bookmarks.user_id', 
+                                      'Bookmarks__title' => 'Bookmarks.title', 
+                                      'Bookmarks__description' => 'Bookmarks.description', 
+                                      'Bookmarks__url' => 'Bookmarks.url', 
+                                      'Bookmarks__created' => 'Bookmarks.created', 
+                                      'Bookmarks__modified' => 'Bookmarks.modified', 
+                                      'Users__id' =>  'Users.id', 
+                                      'Users__email' =>  'Users.email', 
+                                      'Users__password' =>  'Users.password', 
+                                      'Users__created' =>  'Users.created', 
+                                      'Users__modified' =>  'Users.modified', 
+                                      'Users__role' =>  'Users.role', 
+                                      'Users__username' =>  'Users.username'])
+                            ->join([
+                                    'table' =>'users',
+                                    'alias' => 'Users',
+                                    'type' => 'INNER',
+                                    'conditions' => 'Users.id = Bookmarks.user_id'
+                                ]) ;   
+                            /*->limit(20);
+                            ->page(1);*/
         $this->paginate = [
-            'contain' => ['Users']
+        /*    'contain' => ['Users']*/
         ];
-        $bookmarks = $this->paginate($this->Bookmarks);
+        $bookmarks = $this->paginate($bookmarks);
 
         $this->set(compact('bookmarks'));
         $this->set('_serialize', ['bookmarks']);

@@ -59,10 +59,13 @@ Router::scope('/', function (RouteBuilder $routes) {
      * Default route setup : 
      */
 
-    /*$routes->connect('/', ['controller' => 'pages', 'action' => 'index', 'home']);*/
-
     $routes->connect('/', ['controller' => 'users', 'action' => 'index']);
+/*
+    $routes->connect('/:lang', ['controller' => 'users', 'action' => 'index']);
+    $routes->connect('/:lang/:controller/', ['action' => 'index']);
+    $routes->connect('/:lang/:controller/:action/', []);
     $routes->extensions(['json', 'xml']);
+*/
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
      */
@@ -84,6 +87,9 @@ Router::scope('/', function (RouteBuilder $routes) {
      * You can remove these routes once you've connected the
      * routes you want in your application.
      */
+
+    
+
     $routes->fallbacks('DashedRoute');
 });
 

@@ -95,4 +95,35 @@ class UsersTable extends Table
 
         return $rules;
     }
+
+
+    /**
+     * CustomFinder Method :
+     * @return dataObject;
+     * @param $query , $options
+     * userName() this is a custom findr method will use to get search result
+    **/
+
+    public function findUserSearch(Query $query, array $options){
+
+        $userName = $options['username'];
+        return $query->findByUsername($userName);
+    }
+
+
+    public function findAuth(Query $query, Array $options){
+
+    /**
+    * This is custom finder manthod. this will query addiotional OR condition who checks 
+    * the Email as well to allow login through it. 
+    * @param query : it is prequery object sent via Auth Component having all selected fiedls 
+    * @param $option : In this we are receiving all fields value,
+    *
+    **/
+
+
+        return $query
+                ->orWhere(['Users.Email' => $options['username']]);
+        
+    }
 }

@@ -112,7 +112,7 @@ class ArticlesController extends AppController
          }
               else{
             $this->Flash->warning(__('You are not authorized to this article'));
-            return $this->redirect($this->referer());
+            return $this->redirect(['action'=>'index']);
         }   
     }
 
@@ -141,7 +141,7 @@ class ArticlesController extends AppController
         }
         else{
             $this->Flash->error(__('You are not authorized to this article'));
-            return $this->redirect($this->referer());
+            return $this->redirect(['action'=>'index']);
         }
 
     }

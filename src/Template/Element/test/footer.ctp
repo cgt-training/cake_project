@@ -102,5 +102,5 @@
 			
 		
 
-	<?php echo $this->Html->script("bootstrap.min.js"); ?></script>
+	<?php echo $this->Html->script("bootstrap.min.js"); ?>
 	

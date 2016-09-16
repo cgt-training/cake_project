@@ -21,7 +21,7 @@
 
 										<div class="search-bar col-lg-3 col-md-6 col-sm-12">
 										<div class="input-group">
-											<input type="" name="" class="form-control" placeholder="Search">
+											<input type="text" name="search" class="form-control" placeholder="Search">
 											<span class="input-group-btn">
 												<button class="btn btn-default">
 													<span class="glyphicon glyphicon-search"></span>
@@ -62,13 +62,15 @@
 								</div>
 				
 								<div class="navbar-collapse collapse col-padding " id="site-menu">
+
+								
 									<ul class="nav nav-tabs text-capitalize nav-justified menu">
 										<li role="presentation" <?php
 											echo (!empty($this->request->params['controller']) && $this->request->params['controller']=="Users" && $this->request->params['action']!="login")?'class="active"':'';
 
 										 ?>>
 											<?php
-												echo $this->Html->link(__('Users'),['controller'=>'Users','action'=>'index']);
+												echo $this->Html->link(__('Users'),['controller'=>'Users', 'action'=>'index']);
 										?>
 										</li>
 
@@ -77,7 +79,7 @@
 										?>>
 										
 											<?php
-												echo $this->Html->link(__('Bookmarks'),['controller'=>'Bookmarks']);
+												echo $this->Html->link(__('Bookmarks'),['controller'=>'Bookmarks','action'=>'index']);
 										?>
 										</li>
 										<li role="presentation" <?php
@@ -86,7 +88,7 @@
 										 ?>>
 										
 											<?php
-												echo $this->Html->link(__('Tags'),['controller'=>'Tags']);
+												echo $this->Html->link(__('Tags'),['controller'=>'Tags', 'action'=>'index']);
 										?>
 										</li>
 
@@ -96,7 +98,16 @@
 										 ?>>
 										
 											<?php
-												echo $this->Html->link(__('Articles'),['controller'=>'Articles']);
+												echo $this->Html->link(__('Articles'),['controller'=>'Articles', 'action'=>'index']);
+										?>
+										</li>
+										<li role="presentation" <?php
+											echo (!empty($this->request->params['controller']) && $this->request->params['controller']=="Sites")?'class="active"':'';
+
+										 ?>>
+										
+											<?php
+												echo $this->Html->link(__('Testing'),['controller'=>'Sites', 'action'=>'index']);
 										?>
 										</li>
 										
@@ -114,6 +125,7 @@
 
 										if(empty($user)){
 											echo $this->Html->link('Login',$loginRedirect);
+
 										}
 
 										else{
@@ -131,7 +143,7 @@
 			</div>	
 
 <div class="container  dejavu-font">
-				<!-- slider images starts-->
+				<!-- slider images starts-->	
 		
 			
 			<!-- slider images starts-->			

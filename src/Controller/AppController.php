@@ -16,6 +16,8 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 
 /**
  * Application Controller
@@ -37,38 +39,73 @@ class AppController extends Controller
      *
      * @return void
      */
-    public function initialize()
-    {
+
+    public    $defaultLocale = "en";
+    public    $localeOptions = ['en'=>'en_Us',
+                                'hi' => 'hi_In',
+                                'fr' => 'fr_Fr'
+                                ];
+
+    public function initialize(){
+
         parent::initialize();
         
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
+        $this->loadComponent('Cookie',[
+                                        'path' => '/',
+                                        'expires' => '+180 minutes',
+                                        'httpOnly' => true,
+                                        'encryption' =>'aes',
+                                        'key' => null,
+                                        'domain' => null,
+                                        'secure' => false,
+                                        ]);
+
         $this->viewBuilder()->layout("testlayout");
      
         $this->loadComponent('Auth', [ 
+                            'loginRedirect' => [
+                                'controller' => 'Bookmarks',
+                                'action' => 'index',
+                                'prefix' => false,
+                                    ],
+                            'logoutRedirect' => [
+                                'controller' => 'Users',
+                                'action' => 'index',
+                                'prefix' => false,
+                                    ],
+                            'authenticate' => [
+                                'Form' => [
+                                    'fields' => ['username' => 'Username',  'password' => 'password'],
+                                    'finder'=>'auth'
+                                    ],
+                               
+                            ],
+                        ]);
 
-                        'loginRedirect' => [
-                        'controller' => 'Bookmarks',
-                        'action' => 'index',
-                        'prefix' => false,
-                        ],
+   /*     if(empty($this->request->params['lang'])){
+            $this->request->params['lang'] = $this->defaultLocale;
+            $url = [$this->request->params['lang'], $this->request->params['controller'], $this->request->params['action']];
 
-                        'logoutRedirect' => [
-                        'controller' => 'Users',
-                        'action' => 'index',
-                        'prefix' => false,
-                        ],
+            pr($this->request);
+            // /return $this->redirect($url);
+        }
+        else{
+            $language = $this->request->params['lang'];
+            if(array_key_exists($language, $this->localeOptions)){
+                 Configure::write('App.defaultLocale', $this->  localeOptions[$language]);
+                }
+            else{
+                   // return $this->redirect(['lang' => $this->defaultLocale]);       
+            }
+        }*/
 
-                        'authenticate' => [
-                            'Form' => [
-                                'fields' => ['username' => 'username',  'password' => 'password']
-                            ]
 
-                        ],
-                        
-                    ]);
+      $this->getCookie();
 
-     
+
+
     }
 
     /**
@@ -85,7 +122,11 @@ class AppController extends Controller
                 '';
 
         parent::beforeFilter($event);
-        $this->Auth->allow('index');
+        $this->Auth->allow(['index','view']);
+        /*Configure::write('App.defaultLocale','In-hi');  */
+      
+
+        
     }
 
 
@@ -104,6 +145,7 @@ class AppController extends Controller
 
     public function isAuthorized($user){
 
+
         if(!empty($user['role']) && $user['role'] == 'Admin'){
             return true;
         }
@@ -112,4 +154,24 @@ class AppController extends Controller
 
 
     }
+
+    public function getCookie(){
+
+
+
+        $session = $this->request->session()->read('Auth');
+        
+        if(empty($session) && $this->Cookie->check('userLogin.username')){
+            $userName = $this->Cookie->read('userLogin.username');
+            $Users = TableRegistry::get('users');
+            $userData = $Users->findByUsername($userName)->first()->toArray() ;
+            
+            if(count($userData)){
+               $this->Auth->setUser($userData);
+            }
+
+        }
+
+    }
+
 }

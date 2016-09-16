@@ -21,6 +21,9 @@ body{
 	border-left:0 none;
 	border-radius: 0px;
 }
+.search-bar *:focus{
+    border-color : #CCCCCC ;
+}
 .site-menu{
 	margin-bottom: auto;
     min-height: auto;
@@ -922,6 +925,7 @@ text-transform:uppercase
     padding:5px;
     margin-top: 5px;
     margin-bottom: 5px;
+    border-radius: 4px;
 }
 
 .welocme{

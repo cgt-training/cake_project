@@ -22,18 +22,31 @@ class UsersController extends AppController
     public $components = ["Csrf"];
     public $paginate = ['Users'=>[
                 'fields'=>['Users.id', 'Users.username', 'Users.email', 'Users.role','Users.modified', 'Users.created'],
-                'limit'=>10,
-             /*   'maxLimit'=>155,*/
+                /*'finder'=>['userSearch' => ['username'=>'hitesh']],*/
+                'limit'=>2,
+                /*   'maxLimit'=>155,*/
                 'order'=>['Users.id'=>'Asc'],
-                'sortWhitelist'=>['Users.id', 'Users.email','Users.modified', 'Users.created']
+                'sortWhitelist'=>['Users.id', 'Users.email', 'Users.created']
                 ],
                 'Bookmarks'=>['fields'=>['Bookmarks.id','Bookmarks.users_id']]
     ];
 
     public function index()
     {
-        $users = $this->paginate($this->Users);
 
+        
+        // Redirect to example.com/en/ if user access domain explicit
+        /*if(empty($this->request->params['lang']))
+        {
+            pr( $this->request->params);
+            $this->request->params['lang']= 'en';
+           return $this->redirect(['controller'=> 'en']);
+            pr( $this->request->params);        
+        }
+*/
+
+
+        $users = $this->paginate($this->Users);
         $this->set(compact('users'));
         $this->set('_serialize', ['users']);
     }
@@ -63,6 +76,9 @@ class UsersController extends AppController
     public function add()
     {
         $user = $this->Users->newEntity();
+
+        
+
         if ($this->request->is('post')) {
 
             // To store normal password    
@@ -102,7 +118,7 @@ class UsersController extends AppController
             $old_password = (new DefaultPasswordHasher)->check($this->request->data['old_password'],$user['password']);
             
             if(empty($old_password)){
-                $this->Flash->customError(__('Old password is not correct'));
+                $this->Flash->customError(__('Old password is not correct'), ['element'=>'Custom']);
                 
             }
 
@@ -149,26 +165,37 @@ class UsersController extends AppController
 
     public function login(){
 
-        if(!empty($this->request->session()->read('Auth.User'))) {
+        if(!empty($this->request->session()->read('Auth.User'))){
 
             return $this->redirect($this->referer());
         }
+
         if($this->request->is('post')){
+        
             $user= $this->Auth->identify();
-             
+
             if ($user) {
-            $this->Auth->setUser($user);
+                $this->Auth->setUser($user);
+                
+           // store data into cookie
+            if(isset($this->request->data['remember'])){
+
+                $this->Cookie->write('userLogin',['rememberme'=>true, 'role'=>$user['role'], 'username' => $user['username']]);
+            }
+           
             return $this->redirect($this->Auth->redirectUrl());
-        } else {
-            $this->Flash->customError(__('Username or password is incorrect'), ['escape' => true]);
+        } 
+        else{
+            $this->Flash->customError(__('Username or password is incorrect'));
         }
     }
 }
 
 
-public function logout(){
-
-    return $this->redirect($this->Auth->logout());
+        public function logout(){
+            $this->Cookie->delete('userLogin');   
+            $this->Flash->set(__('Logout successfully'),['element'=>'Custom/custom_success']);
+            return $this->redirect($this->Auth->logout());
 }
 
 

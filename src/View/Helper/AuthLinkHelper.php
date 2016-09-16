@@ -5,16 +5,17 @@ namespace App\View\Helper;
 use Cake\View\Helper;
 
 
-
 class AuthLinkHelper extends Helper{
 
+	public $helpers = ['Html','Form'];
 
-	public function allowedLink($userRole=null,$url=null,$actionName=null){
+	public function allowedLink($userRole = null, $url = [], $actionName = null, $options = []){
 
 	// $this->AuthLink->allowedLink($userRole,['action' => 'view', $user->id],' View ');
 
 		if($actionName == null){
 			$actionName = $url['action'];
+			
 		}
 
 			
@@ -22,11 +23,13 @@ class AuthLinkHelper extends Helper{
 		{
 			switch($url['action']){
 				case 'delete' : $actionName = "-";
-								$url['url']='';
+								$url['action'] = '';
+								$options += ['class'=>'btn disabled'];
 								break;
 
 				case 'edit'    : $actionName = "-";
-								$url['url']='';
+								$url['action']='';
+								$options+=['class'=>'btn disabled'];
 								break;
 				}
 
@@ -35,28 +38,34 @@ class AuthLinkHelper extends Helper{
 
 		else if(!empty($user) && !empty($url)){
 			
-			if($user == '')
+			if($user == 'user')
 			{
-				switch($action['action']){
-					case 'delete' : $url['action'] = "-";
-						    		$url['url']='';
+				switch($url['action']){
+					case 'delete' : $actionName = "-";
+						    		$url['action'] = '';
+						    		$options+=['class'=>'btn disabled'];
 				}
 			
 			}
+	 		
+		}
+		
+		
+
+		if($actionName == "delete" || $actionName 	== "Delete"){
 			
+			
+			if(!empty($url)) 
+				$options+= ['confirm' => __('Are you sure you want to delete # {0}?'), $url[0]];
+ 			
+ 			return $this->Form->postLink(__($actionName), $url, $options); 
+
 		}
 		
 
-		if($actionName == 'delete' || $actionName == 'Delete'){
+			return  $this->Html->link(__($actionName), $url,$options) ;
 
-			return $this->Html->link($actionName, $url,)
-		}
-
-		$url['url'] = $url;
-		$url['action'] = $actionName;
-		$this->Html->link(__($action['action']), $action['url']) ;
-
-		return $url;
+		
 	}
 
 }		

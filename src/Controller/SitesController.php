@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Security;
 
 
 /**
@@ -29,6 +30,7 @@ class SitesController extends AppController{
     public function initialize(){
         parent::initialize();
         $this->viewBuilder()->layout('testlayout');
+        $this->loadModel('Users');
         
 
     }
@@ -37,10 +39,33 @@ class SitesController extends AppController{
         //$sites = TableRegistry::get('Sites');
 		//$records = $sites->find('list')->select(['title','site_url']);
 
-        $sites= $this->paginate($this->Sites);
+        
 
-		
-		$this->set('sites',$sites);
+
+
+        //-----------Concat fucntion of mysql-------------------
+        /*$query = $this->Users->find();
+        $user = $this->Users->find()->select(['con_username'=> $query->func()->concat(['username'=>'identifier','password' => 'identifier'])])->select(['username'])->all();*/
+
+
+        //-----------First record Limit 1----------------------
+/*        $user = $this->Users
+                    ->findByUsername('hitesh')
+                    ->first();
+*/                    
+        $user = $this->Users->find()->extract('username')->toArray();
+
+        /*$user =        $this->Users->find()->orWhere(['username'=>'hitesh'])->orWhere(['username' => 'xyz'])->all();*/
+        $user = $this->Users->find('list')->first();;
+        /*debug($users);*/
+        /*$this->Users->find()->where(['username'=>'hitesh'])->order(['id'=>'Asc','username'=>'Desc'])->limit(100)->page(2.25)->all();*/
+		$key="JOPJdlsjrKJHioudsklhUIoJopsefOPUio";
+        $string ='Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid';
+        $this->set('encrpt',Security::encrypt($string, $key));   
+        $this->set('decrpt',Security::decrypt(Security::encrypt($string, $key),$key));
+		$this->set('user',$user);
+
+
 	}
 
 

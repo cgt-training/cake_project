@@ -43,7 +43,7 @@
         <table cellpadding="0" cellspacing="0">
             <tr>
                 <th scope="col"><?= __('Id') ?></th>
-                <th scope="col"><?= __('Description') ?></th>
+                <th scope="col"><?= __('Title') ?></th>
                 <th scope="col"><?= __('Url') ?></th>
                 <th scope="col"><?= __('Created') ?></th>
                 <th scope="col"><?= __('Modified') ?></th>
@@ -53,7 +53,6 @@
             <tr>
                 <td><?= h($bookmarks->id) ?></td>
                 <td><?= h($bookmarks->title) ?></td>
-                <td><?= h($bookmarks->description) ?></td>
                 <td><?= h($bookmarks->url) ?></td>
                 <td><?= h($bookmarks->created) ?></td>
                 <td><?= h($bookmarks->modified) ?></td>

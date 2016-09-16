@@ -25,7 +25,7 @@
             <?php foreach ($bookmarks as $bookmark): ?>
             <tr>
                 <td><?= $this->Number->format($bookmark->id) ?></td>
-                <td><?= $bookmark->has('user') ? $this->Html->link($bookmark->user->email, ['controller' => 'Users', 'action' => 'view', $bookmark->user->id]) : '' ?></td>
+                <td><?= $bookmark['user_id'] ? $this->Html->link($bookmark['Users']['email'], ['controller' => 'Users', 'action' => 'view', $bookmark['Users']['id']]) : '' ?></td>
                 <td><?= h($bookmark->title) ?></td>
                 <td><?= h($bookmark->created) ?></td>
                 <td><?= h($bookmark->modified) ?></td>
