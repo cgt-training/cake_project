@@ -62,9 +62,37 @@ class AppController extends Controller
                                         'secure' => false,
                                         ]);
 
-        $this->viewBuilder()->layout("testlayout");
+        
      
-        $this->loadComponent('Auth', [ 
+
+        if(isset($this->request->prefix) && $this->request->prefix === 'admin'){
+
+                 $this->loadComponent('Auth', [ 
+                            'authorize' => 'Controller',
+                            'loginRedirect' => [
+                                'controller' => 'Users',
+                                'action' => 'index',
+                                'prefix' => 'admin',
+                                    ],
+                            'logoutRedirect' => [
+                                'controller' => 'Users',
+                                'action' => 'login',
+                                'prefix' => 'admin',
+                                    ],
+                            'authenticate' => [
+                                'Form' => [
+                                    'fields' => ['username' => 'Username',  'password' => 'password'],
+                                    'finder' => 'admin'
+                                    ],
+                               
+                            ],
+                        ]);
+                 $this->viewBuilder()->layout("adminlayout");
+        }
+        else
+        {
+            $this->loadComponent('Auth', [ 
+                            
                             'loginRedirect' => [
                                 'controller' => 'Bookmarks',
                                 'action' => 'index',
@@ -84,6 +112,8 @@ class AppController extends Controller
                             ],
                         ]);
 
+           $this->viewBuilder()->layout("testlayout"); 
+        }
    /*     if(empty($this->request->params['lang'])){
             $this->request->params['lang'] = $this->defaultLocale;
             $url = [$this->request->params['lang'], $this->request->params['controller'], $this->request->params['action']];
@@ -118,11 +148,15 @@ class AppController extends Controller
 
     public function beforeFilter(Event $event){
 
-            if($this->request->params['action']=='edit')
-                '';
-
         parent::beforeFilter($event);
-        $this->Auth->allow(['index','view']);
+        
+        if($this->request->prefix === 'admin'){
+            $this->Auth->deny();
+        }
+        else{
+            $this->Auth->allow(['index','view']);
+        }
+        
         /*Configure::write('App.defaultLocale','In-hi');  */
       
 
@@ -143,15 +177,29 @@ class AppController extends Controller
     }
 
 
-    public function isAuthorized($user){
-
-
-        if(!empty($user['role']) && $user['role'] == 'Admin'){
-            return true;
+    public function isAuthorized($user = null)
+    {
+        
+    // Only admins can access admin functions
+        if (empty($this->request->params['prefix']) && $user['role'] != 'admin') {
+              return false;
         }
 
-        return false;
+        
+        if (isset($this->request->params['prefix']) && $this->request->params['prefix'] === 'admin'){
 
+            if($user['role'] != 'admin')
+            {
+               // $this->Flash->customError(__('You are not authorized'));
+                //$this->redirect(['controller'=>'Users', 'action' => 'index', 'prefix' => false]);
+                return $this->redirect($this->Auth->logout());
+                //return false;
+            }
+                
+
+        }
+       return true;
+    
 
     }
 

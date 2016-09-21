@@ -70,10 +70,29 @@ class UsersTable extends Table
             ->requirePresence('password', 'create')
             ->add('password',[
                 'size'=> [
-                    'rule'  => ['lengthBetween',6,8],
+                    'rule'  => ['lengthBetween', 6, 8],
                     'message'=>'Password length must be between 8 to 15'    ]
                     ])
             ->notEmpty('password');
+
+        $validator
+            ->requirePresence('old_password','update')
+            ->add('old_password', [
+                    'size' => [
+                        'rule' => ['lengthBetween', 6, 8],
+                        'message' => 'Password Length must between 6 to 8'
+                ]])
+            ->notEmpty('old_password');
+
+        $validator
+            ->requirePresence('new_password')
+            ->add('new_password',[
+                    'size' => [
+                        'rule' => ['lengthBetween', 6, 8],
+                        'message' => 'Password Length must between 6 to 8'   
+                ]])
+            ->notEmpty('new_paasowrd');
+
 
         $validator
             ->requirePresence('role','create')
@@ -125,5 +144,11 @@ class UsersTable extends Table
         return $query
                 ->orWhere(['Users.Email' => $options['username']]);
         
+    }
+
+    public function findAdmin(Query $query, array $options){
+        return $query
+                ->find('auth', $options)
+                ->where(['Users.role' =>'admin']);
     }
 }

@@ -61,6 +61,14 @@ class SitesController extends AppController{
         /*$this->Users->find()->where(['username'=>'hitesh'])->order(['id'=>'Asc','username'=>'Desc'])->limit(100)->page(2.25)->all();*/
 		$key="JOPJdlsjrKJHioudsklhUIoJopsefOPUio";
         $string ='Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid Hitesh Jangid';
+
+        $this->set('md5',Security::hash('hiteshjangid', 'md5','IHOIEHKLhfwsefiohKLHiohwklhfoIohnferoioHOI'));
+
+        $this->set('sha1',Security::hash('hiteshjangid', 'sha1','IHOIEHKLhfwsefiohKLHiohwklhfoIohnferoioHOI'));
+
+        $this->set('sha256',Security::hash('hiteshjangid', 'sha256','IHOIEHKLhfwsefiohKLHiohwklhfoIohnferoioHOI'));
+
+        
         $this->set('encrpt',Security::encrypt($string, $key));   
         $this->set('decrpt',Security::decrypt(Security::encrypt($string, $key),$key));
 		$this->set('user',$user);

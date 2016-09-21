@@ -1,0 +1,147 @@
+
+.disabled a,
+a.disabled {
+    pointer-events: none;
+}
+
+a:hover {
+    color: #cf1e69;
+}
+
+a {
+    color: #b62b66;
+}
+
+.side-nav li a:not(.button) {
+    color: #15848F;
+}
+
+.side-nav li a:not(.button):hover {
+    color: #15848F;
+}
+ 
+.actions{
+
+} 
+
+.actions :hover{
+    color: #cf1e69;
+} 
+.content h3 {
+    color: #be140b;
+    padding-bottom: 0.5rem;
+    margin-bottom: 20px;
+}
+
+.content h4 {
+    color: #be140b;
+    padding-bottom: 0.5rem;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #be140b;
+}
+
+.content .related h4 {
+    color: #4d8f97;
+    padding-bottom: 0.5rem;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-bottom: 0px;
+}
+
+
+.side-nav{
+	display:block;
+	font-family:"Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:0;padding:0.875rem 0
+	}
+
+.side-nav li{
+	
+	font-weight:normal;
+	margin:0 0 0.4375rem 0
+	}
+
+	.side-nav li a:not(.button){
+		color : #c12b66;
+		display:block;
+		margin:0;
+		padding:0.4375rem 0.875rem
+		}
+.side-nav li a:not(.button):hover,.side-nav li a:not(.button):focus{
+background:rgba(0,0,0,0.025);
+color:#536f78
+}
+.side-nav li a:not(.button):active{
+color:#1cc7ff
+}
+.side-nav li.active>a:first-child:not(.button){
+color:#1cc7ff;
+font-family:"Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;
+font-weight:normal
+}
+.side-nav li.divider{
+border-top:1px solid;
+height:0;
+list-style:none;
+padding:0;border-top-color:#e6e6e6
+}
+.side-nav li.heading{
+color:#008CBA;
+font-weight:bold;
+text-transform:uppercase
+}
+
+.form-container .input-group{
+    padding: 5px 0px;
+}
+
+
+#login{
+    border: 1px solid #000;
+    border-radius: 4px;
+    box-shadow: 5px 3px 16px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 5px;
+}
+
+.welocme{
+    font-weight: bold;
+    color: #fff;
+    
+}
+#actions-sidebar
+{
+    background: #c2ddff 
+}
+.side-nav li.heading{
+    color: #F55757;
+}
+
+table{
+    background: transparent;
+    border-right: 1px #A2A2A2 solid;
+    border-left: 1px #A2A2A2 solid;
+}
+.footer{
+    background: #000 none repeat scroll 0 0;
+    color: #fff;
+    display: block;
+    min-height: 60px;
+    padding-top: 10px;
+    /*position: absolute;
+    width: 100%;
+    bottom: 0;*/
+} 
+
+#login form{
+
+    margin:50px 0px;
+}
+
+.input-group{
+    margin: 5px 0px;
+}
+

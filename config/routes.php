@@ -60,6 +60,9 @@ Router::scope('/', function (RouteBuilder $routes) {
      */
 
     $routes->connect('/', ['controller' => 'users', 'action' => 'index']);
+
+    
+
 /*
     $routes->connect('/:lang', ['controller' => 'users', 'action' => 'index']);
     $routes->connect('/:lang/:controller/', ['action' => 'index']);
@@ -87,11 +90,24 @@ Router::scope('/', function (RouteBuilder $routes) {
      * You can remove these routes once you've connected the
      * routes you want in your application.
      */
+$routes->prefix('Admin', function($routes){
 
+        $routes->connect('/', ['controller' => 'Users', 'action'=> 'index']) ;
+
+        $routes->connect('/:controller/', ['action', 'index']);
+
+        $routes->connect('/:controller/:action/*', []);
+
+        $routes->fallbacks('InflectedRoute');
+
+
+}); 
     
 
     $routes->fallbacks('DashedRoute');
 });
+
+
 
 /**
  * Load all plugin routes.  See the Plugin documentation on

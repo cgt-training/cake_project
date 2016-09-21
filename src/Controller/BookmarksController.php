@@ -140,4 +140,42 @@ class BookmarksController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+    public function test(){
+
+        // $bookmarks = $this->Bookmarks->find('all', [
+                    // 'conditions' => ['OR' => ['user_id' => 2, 'twit LIKE' => '%seed%'], 'user_id' => 2],
+                    // 'contain' => ['Tags']
+                    // 'join' => ['table' => 'users', 'type' => 'left', 'conditions' => ['Bookmarks.user_id = users.id']]
+                    // 'group' => 'user_id'
+            // ])->toArray();
+
+
+        // $bookmarks = $this->Bookmarks->find('list', [
+        //             'keyField' => 'twit',
+        //             'valueField' => 'twit',
+        //             'groupField' => 'user_id'
+        //         ])->toArray();
+
+        /** custom finder **/
+        // $query = $this->Bookmarks->find('customFinder', ['user' => 2])->toArray();
+        // $query = $this->Bookmarks->find('customFinder', ['user' => 2])->find('getUser', ['user' => 1])->toArray();
+
+        /* Dynamic finder **/
+        // $query = $this->Bookmarks->findByUserId(3)->toArray();
+        // $query = $this->Bookmarks->findByUserIdOrTwitOrDescription(2,'b2','sd')->toArray();
+        // $query = $this->Bookmarks->findGetUserByUserId(2)->toArray();
+
+        //contain
+        $bookmarks = $this->Bookmarks->find('all', [
+                'contain' => ['Tags']
+            ])->toArray();
+
+pr($bookmarks);exit();
+        $this->set('color', 'pink');
+        $this->set(compact('bookmarks'));
+        $this->set('_serialize', ['bookmarks']);
+
+
+    }
 }

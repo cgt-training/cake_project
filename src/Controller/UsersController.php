@@ -31,6 +31,14 @@ class UsersController extends AppController
                 'Bookmarks'=>['fields'=>['Bookmarks.id','Bookmarks.users_id']]
     ];
 
+    public $user = null;
+
+    public function initialize(){
+
+        $this->user = $this->request->session()->read('Auth.User');
+        parent::initialize();
+    }
+
     public function index()
     {
 
@@ -75,11 +83,13 @@ class UsersController extends AppController
      */
     public function add()
     {
-        $user = $this->Users->newEntity();
 
+
+        if($this->isAuthorized($this->user)){
         
+            $user = $this->Users->newEntity();
 
-        if ($this->request->is('post')) {
+            if ($this->request->is('post')) {
 
             // To store normal password    
                 $this->request->data['password_normal'] = $this->request->data['password'];             
@@ -87,16 +97,24 @@ class UsersController extends AppController
              $user = $this->Users->patchEntity($user, $this->request->data);
 
             
-            if ($this->Users->save($user)) {
-                $this->Flash->success(__('The user has been saved.'));
+                if ($this->Users->save($user)) {
+                    $this->Flash->success(__('The user has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The user could not be saved. Please, try again.'));
+                    return $this->redirect(['action' => 'index']);
+                } 
+                else {
+                    $this->Flash->error(__('The user could not be saved. Please, try again.'));
+                }
             }
+
+            $this->set(compact('user'));
+            $this->set('_serialize', ['user']);
         }
-        $this->set(compact('user'));
-        $this->set('_serialize', ['user']);
+        else{
+
+            $this->Flash->warning(__('You are not authorized'));
+            return $this->redirect(['action'=>'index']);
+        }
     }
 
     /**
@@ -109,37 +127,44 @@ class UsersController extends AppController
     public function edit($id = null)
     {
 
-        $user = $this->Users->get($id, [
-            'contain' => [],
-        ]);
+        if($this->isAuthorized($this->user)){
+            $user = $this->Users->get($id, [
+                'contain' => [],
+            ]);
 
-       if ($this->request->is(['patch', 'post', 'put'])) {
+           if ($this->request->is(['patch', 'post', 'put'])) {
 
-            $old_password = (new DefaultPasswordHasher)->check($this->request->data['old_password'],$user['password']);
-            
-            if(empty($old_password)){
-                $this->Flash->customError(__('Old password is not correct'), ['element'=>'Custom']);
+                $old_password = (new DefaultPasswordHasher)->check($this->request->data['old_password'],$user['password']);
                 
-            }
-
-            else{
-        
-                $user = $this->Users->patchEntity($user, $this->request->data);
-            
-                if ($this->Users->save($user)) {
+                if(empty($old_password)){
+                    $this->Flash->customError(__('Old password is not correct'), ['element'=>'Custom']);
                     
-                    $this->Flash->success(__('The user has been saved.'));
-                    return $this->redirect(['action' => 'index']);
                 }
 
                 else{
-                    $this->Flash->error(__('The user could not be saved. Please, try again.'));
+            
+                    $user = $this->Users->patchEntity($user, $this->request->data,['validate'=>'default']);
+                
+                    if ($this->Users->save($user)) {
+                        
+                        $this->Flash->success(__('The user has been saved.'));
+                        return $this->redirect(['action' => 'index']);
+                    }
+
+                    else{
+                        $this->Flash->error(__('The user could not be saved. Please, try again.'));
+                    }
                 }
             }
-        }
 
-        $this->set(compact('user'));
-        $this->set('_serialize', ['user']);
+            $this->set(compact('user'));
+            $this->set('_serialize', ['user']);
+        }      
+        else{
+
+            $this->Flash->warning(__('You are not authorized'));
+            return $this->redirect(['action'=>'index']);
+        }
     }
 
     /**
@@ -165,7 +190,7 @@ class UsersController extends AppController
 
     public function login(){
 
-        if(!empty($this->request->session()->read('Auth.User'))){
+       if(!empty($this->request->session()->read('Auth.Users')) ){
 
             return $this->redirect($this->referer());
         }
@@ -174,29 +199,40 @@ class UsersController extends AppController
         
             $user= $this->Auth->identify();
 
+           
             if ($user) {
                 $this->Auth->setUser($user);
                 
            // store data into cookie
             if(isset($this->request->data['remember'])){
 
-                $this->Cookie->write('userLogin',['rememberme'=>true, 'role'=>$user['role'], 'username' => $user['username']]);
+                $this->Cookie->write('userLogin',['rememberme' => true, 'role' => $user['role'], 'username' => $user['username']]);
             }
-           
-            return $this->redirect($this->Auth->redirectUrl());
+
+           /* if(isset($user['role']) && $user['role'] == 'admin')
+            {
+                $this->request->prefix = '/admin';
+                return $this->redirect([$this->request->prefix]);
+                //return $this->redirect($this->request->prefix);
+                }
+            else*/
+                return $this->redirect($this->Auth->redirectUrl());
         } 
         else{
             $this->Flash->customError(__('Username or password is incorrect'));
+            }
         }
     }
-}
 
 
-        public function logout(){
+
+
+    public function logout(){
+        
             $this->Cookie->delete('userLogin');   
             $this->Flash->set(__('Logout successfully'),['element'=>'Custom/custom_success']);
             return $this->redirect($this->Auth->logout());
-}
+        }
 
 
 }

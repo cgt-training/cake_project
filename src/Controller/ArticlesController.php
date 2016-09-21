@@ -17,12 +17,12 @@ class ArticlesController extends AppController
      * @return \Cake\Network\Response|null
      */
 
-    public $user = null;
+    public $user = [];
 
     public  function initialize(){
         parent::initialize();
 
-         $this->user= $this->Auth->user('id');
+         $this->user = $this->request->session()->read('Auth.User');
     }
 
     public function index()
@@ -147,7 +147,7 @@ class ArticlesController extends AppController
     }
 
 
-        public function isAuthorized($user){
+        public function isAuthorized($user = NULL){
 
                 if($this->request->params['action']=='add'){
                     return true;
@@ -157,9 +157,10 @@ class ArticlesController extends AppController
 
                     $articleId= $this->request->params['pass'][0];
 
-                        if($this->Articles->isOwnedBy($articleId,$user)){
+                        if($this->Articles->isOwnedBy($articleId,$user['id'])){
                          return true;
                         }
+                        
                 }
                             
                   return parent::isAuthorized($user);  
